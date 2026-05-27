@@ -1,6 +1,15 @@
+using FinanceiroMVP.API.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Serviços da aplicação
+// Connection String
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Serviços
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(connectionString));
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
