@@ -1,3 +1,4 @@
+using FinanceiroMVP.API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinanceiroMVP.API.Data;
@@ -8,4 +9,6 @@ public class AppDbContext : DbContext
         : base(options)
     {
     }
+
+    public DbSet<Transacao> Transacoes { get; set; }
 }
