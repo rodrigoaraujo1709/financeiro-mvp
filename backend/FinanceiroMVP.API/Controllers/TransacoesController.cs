@@ -1,7 +1,6 @@
-using FinanceiroMVP.API.Data;
-using FinanceiroMVP.API.Models;
+using FinanceiroMVP.API.DTOs;
+using FinanceiroMVP.API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FinanceiroMVP.API.Controllers;
 
@@ -9,48 +8,46 @@ namespace FinanceiroMVP.API.Controllers;
 [Route("api/[controller]")]
 public class TransacoesController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly ITransacaoService _service;
 
-    public TransacoesController(AppDbContext context)
+    public TransacoesController(ITransacaoService service)
     {
-        _context = context;
+        _service = service;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Transacao>>> Get()
+    public async Task<IActionResult> Get()
     {
-        return await _context.Transacoes.ToListAsync();
+        var transacoes = await _service.ListarAsync();
+        return Ok(transacoes);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Transacao>> GetById(int id)
+    public async Task<IActionResult> GetById(int id)
     {
-        var transacao = await _context.Transacoes.FindAsync(id);
+        var transacao = await _service.BuscarPorIdAsync(id);
 
         if (transacao == null)
             return NotFound();
 
-        return transacao;
+        return Ok(transacao);
     }
 
     [HttpPost]
-    public async Task<ActionResult<Transacao>> Post(Transacao transacao)
+    public async Task<IActionResult> Post(CriarTransacaoDto dto)
     {
-        _context.Transacoes.Add(transacao);
-        await _context.SaveChangesAsync();
+        var transacao = await _service.CriarAsync(dto);
 
         return CreatedAtAction(nameof(GetById), new { id = transacao.Id }, transacao);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put(int id, Transacao transacao)
+    public async Task<IActionResult> Put(int id, AtualizarTransacaoDto dto)
     {
-        if (id != transacao.Id)
-            return BadRequest();
+        var atualizado = await _service.AtualizarAsync(id, dto);
 
-        _context.Entry(transacao).State = EntityState.Modified;
-
-        await _context.SaveChangesAsync();
+        if (!atualizado)
+            return NotFound();
 
         return NoContent();
     }
@@ -58,14 +55,10 @@ public class TransacoesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var transacao = await _context.Transacoes.FindAsync(id);
+        var excluido = await _service.ExcluirAsync(id);
 
-        if (transacao == null)
+        if (!excluido)
             return NotFound();
-
-        _context.Transacoes.Remove(transacao);
-
-        await _context.SaveChangesAsync();
 
         return NoContent();
     }
