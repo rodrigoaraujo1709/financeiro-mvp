@@ -14,6 +14,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<ITransacaoService, TransacaoService>();
 
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
