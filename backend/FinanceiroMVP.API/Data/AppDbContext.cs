@@ -11,4 +11,6 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<Transacao> Transacoes { get; set; }
+
+    public DbSet<Categoria> Categorias { get; set; }
 }
