@@ -15,15 +15,19 @@ public class TransacaoService : ITransacaoService
         _context = context;
     }
 
-    public async Task<IEnumerable<Transacao>> ListarAsync()
-    {
-        return await _context.Transacoes.ToListAsync();
-    }
+ public async Task<IEnumerable<Transacao>> ListarAsync()
+{
+    return await _context.Transacoes
+        .Include(t => t.Categoria)
+        .ToListAsync();
+}
 
-    public async Task<Transacao?> BuscarPorIdAsync(int id)
-    {
-        return await _context.Transacoes.FindAsync(id);
-    }
+ public async Task<Transacao?> BuscarPorIdAsync(int id)
+{
+    return await _context.Transacoes
+        .Include(t => t.Categoria)
+        .FirstOrDefaultAsync(t => t.Id == id);
+}
 
     public async Task<Transacao> CriarAsync(CriarTransacaoDto dto)
     {

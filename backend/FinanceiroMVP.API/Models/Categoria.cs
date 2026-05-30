@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace FinanceiroMVP.API.Models;
 
 public class Categoria
@@ -10,5 +12,6 @@ public class Categoria
 
     public string? Icone { get; set; }
 
+    [JsonIgnore]
     public ICollection<Transacao> Transacoes { get; set; } = new List<Transacao>();
 }
