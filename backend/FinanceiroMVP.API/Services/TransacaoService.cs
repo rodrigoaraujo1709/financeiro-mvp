@@ -32,7 +32,8 @@ public class TransacaoService : ITransacaoService
             Descricao = dto.Descricao,
             Valor = dto.Valor,
             Data = dto.Data,
-            Tipo = dto.Tipo
+            Tipo = dto.Tipo,
+            CategoriaId = dto.CategoriaId
         };
 
         _context.Transacoes.Add(transacao);
@@ -52,6 +53,8 @@ public class TransacaoService : ITransacaoService
         transacao.Valor = dto.Valor;
         transacao.Data = dto.Data;
         transacao.Tipo = dto.Tipo;
+        transacao.CategoriaId = dto.CategoriaId;
+        
 
         await _context.SaveChangesAsync();
 
